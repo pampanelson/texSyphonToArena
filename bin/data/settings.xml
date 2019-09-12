@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<group>
+	<min_area>1</min_area>
+	<max_area>800</max_area>
+	<tracking_thresh>45.055</tracking_thresh>
+	<near>230</near>
+	<far>70</far>
+	<use_opencv>0</use_opencv>
+</group>
