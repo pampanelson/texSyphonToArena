@@ -55,7 +55,7 @@ void ofApp::setup(){
     
     words.load("words.jpg");
     
-    dataImg.allocate(1600,400,OF_IMAGE_COLOR);
+    dataImg.allocate(3840,960,OF_IMAGE_COLOR);
     
     for (int i = 0; i < words.getWidth(); i++) {
         for (int j = 0; j < words.getHeight(); j++) {
@@ -160,10 +160,25 @@ void ofApp::update(){
             
             ofColor c1;
             c1.r = c.r;
-            c1.b = dataImg.getColor(i,j).b;
             c1.g = 0;
             
-            dataImg.setColor(i, j, c1);
+            
+            c1.b = dataImg.getColor(i*2,j*2).b;
+            dataImg.setColor(i*2, 2*j, c1);
+            
+            c1.b = dataImg.getColor(i*2+1,j*2).b;
+            dataImg.setColor(i*2+1, 2*j, c1);
+            
+            
+            c1.b = dataImg.getColor(i*2,j*2+1).b;
+            dataImg.setColor(i*2, 2*j+1, c1);
+            
+            c1.b = dataImg.getColor(i*2+1,j*2+1).b;
+            dataImg.setColor(i*2+1, 2*j+1, c1); // dataImg is 3840x960 , need double the diff with height and width
+            // 0 -> 0,1
+            // 1 -> 2,3
+            
+        
         }
     }
     dataImg.update();
