@@ -34,6 +34,11 @@ void ofApp::setup(){
     
     ofSetBackgroundColor(0, 0, 0);
     
+    
+    // open an outgoing connection to HOST:PORT
+    sender.setup(HOST, PORT);
+    
+
     camWidth = 640;  // try to grab at this size.
     camHeight = 480;
     
@@ -76,10 +81,7 @@ void ofApp::setup(){
     height = 960;
 
 
-    syphonFbo.allocate(width,height);
-    
-    syphonServer.setName("texForArena");
-    
+
     words.load("words.jpg");
     
     dataImg.allocate(3840,960,OF_IMAGE_COLOR);
@@ -106,7 +108,8 @@ void ofApp::setup(){
     
     gui.setup();
 
-    
+    gui.add(bSendingOSC.set("Sending osc",false));
+    gui.add(bTracking.set("Tracking",false));
     
     gui.add(minAreaRadius.set("min area",1,1,300));
     gui.add(maxAreaRadius.set("max area",10,1,800));
@@ -137,7 +140,7 @@ void ofApp::setup(){
 void ofApp::update(){
     
     for (int i = 0; i < trackingDataSize; i++) {
-        trackingData.push_back(-0.1);
+//        trackingData.push_back(-0.1);
     }
     
     vidGrabber.update();
@@ -294,21 +297,58 @@ void ofApp::update(){
     grayImage.setFromPixels(strench);
     grayImage.flagImageChanged();
     
-    syphonFbo.begin();
-    ofClear(0,0,0);
-
-    //dataImg.draw(0, 0,3840,960);
-    syphonFbo.end();
-    syphonServer.publishTexture(&syphonFbo.getTexture());
-    
-    
+    if(bSendingOSC){
+        // prepare data for osc send ----------------------------------------
+        
+        ofxOscMessage m;
+        ofxOscMessage m1;
+        //        m.setAddress("/composition/selectedclip/video/effects/pwl00/effect/float1");
+        //        m.addFloatArg(ofMap(ofGetMouseX(), 0, ofGetWidth(), 0.f, 1.f, true));
+        //        //    m.addFloatArg(ofMap(ofGetMouseY(), 0, ofGetHeight(), 0.f, 1.f, true));
+        //        sender.sendMessage(m, false);
+        //        m.clear();
+        
+        string data;
+        
+        for(int i = 0;i<trackingDataSize;i++){
+            //            oscTrackingData[i] = -0.1;
+            //            oscTrackingData[i] += i * 0.1;
+            data += ofToString(trackingData[i]);
+            if(i != trackingDataSize - 1){
+                data += ",";
+            }
+            
+        }
+        
+        
+        cout << data << endl;
+        
+        // debug ================
+        //        m.setAddress("/composition/selectedclip/video/effects/pwaveword/effect/osctextdata0");
+        m.setAddress("/composition/selectedclip/video/effects/pwaveword/effect/osctextdata0");
+        m.addStringArg(data);
+        sender.sendMessage(m,false);
+        
+        
+        m1.setAddress("/composition/selectedclip/video/effects/pwaveline/effect/oscdataline0");
+        m1.addStringArg(data);
+        sender.sendMessage(m1,false);
+        
+        m1.clear();
+        
+        
+        
+        
+        //
+    }
 }
+    
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     
     
-    grayImage.draw(0,0,640,480);
+//    grayImage.draw(0,0,640,480);
 //    diff.draw(640, 480);
     
 //    vidGrabber.getTexture().draw(0, 0);

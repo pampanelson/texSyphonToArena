@@ -1,11 +1,17 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxSyphon.h"
 #include "ofxGui.h"
 #include "ofxCv.h"
 #include "ofxOpenCv.h"
+#include "ofxOsc.h"
 
+// send host (aka ip address)
+#define HOST "localhost"
+//#define HOST "192.168.0.174"
+
+/// send port
+#define PORT 8000
 using namespace ofxCv;
 using namespace cv;
 class ofApp : public ofBaseApp{
@@ -28,9 +34,10 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     float myPosToAngle(float x,float y,float cX,float cY);
 
-    ofxSyphonServer     syphonServer;
-    ofFbo               syphonFbo;
     
+    ofxOscSender sender;
+
+
     ofImage               words;
     ofImage               dataImg;
     
@@ -71,7 +78,12 @@ class ofApp : public ofBaseApp{
     
     ofParameter<int> detectStrenchrX;
     
-
+    ofParameter<bool> bSendingOSC;
+    ofParameter<bool> bTracking;
+    
+    
+    
+    
     int trackingDataSize = 64;
     vector<float> trackingData;
 };
