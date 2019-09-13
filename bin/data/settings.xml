@@ -9,5 +9,6 @@
 	<circle_x>329</circle_x>
 	<circle_y>364</circle_y>
 	<out_r>233</out_r>
-	<in_r>216</in_r>
+	<in_r>1</in_r>
+	<strench>64</strench>
 </group>

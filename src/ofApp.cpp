@@ -176,10 +176,18 @@ void ofApp::update(){
                 strenchedX = x - detectStrenchrX;
             }
             
-            
-            
+        
 
-            strench.setColor(strenchedX, y, c);
+            // drop aren between strenched
+            if(abs(x - detectCircleCenterX) <= detectStrenchrX){
+                strench.setColor(x, y, ofColor(0));
+
+            }
+            else{
+                strench.setColor(strenchedX, y, c);
+
+            }
+            
 
             
         }
