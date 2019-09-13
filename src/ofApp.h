@@ -51,6 +51,7 @@ class ofApp : public ofBaseApp{
     ofxCvGrayscaleImage grayThreshFar; // the far thresholded image
 
     ofPixels previous;
+    ofPixels strench;
     ofImage diff;
     cv::Scalar diffMean;
     
@@ -61,5 +62,15 @@ class ofApp : public ofBaseApp{
     ofParameter<float> trackingThreshold;
     ofParameter<int> nearThreshold;
     ofParameter<int> farThreshold;
+    ofParameter<int> outRadius;
+    ofParameter<int> inRadius;
     
+    ofParameter<int> detectCircleCenterX;
+    ofParameter<int> detectCircleCenterY;
+    
+    ofParameter<int> detectStrenchrX;
+    
+
+
+
 };

@@ -6,4 +6,8 @@
 	<near>230</near>
 	<far>70</far>
 	<use_opencv>0</use_opencv>
+	<circle_x>329</circle_x>
+	<circle_y>364</circle_y>
+	<out_r>233</out_r>
+	<in_r>216</in_r>
 </group>

@@ -41,6 +41,7 @@ void ofApp::setup(){
     
     
     imitate(previous, grayImage);
+    imitate(strench, grayImage);
     imitate(diff, grayImage);
     
     
@@ -84,6 +85,12 @@ void ofApp::setup(){
     gui.add(farThreshold.set("far",70,1,255));
     gui.add(bThreshWithOpenCV.set("use opencv", false));
     
+    gui.add(detectCircleCenterX.set("circle x",0,0,640));
+    gui.add(detectCircleCenterY.set("circle y",0,0,640));
+    gui.add(detectStrenchrX.set("strench",0,0,640));
+    gui.add(outRadius.set("out r",10,1,480));
+    gui.add(inRadius.set("in r",0,1,480));
+
     
     if (!ofFile("settings.xml"))
         gui.saveToFile("settings.xml");
@@ -136,33 +143,80 @@ void ofApp::update(){
     grayImage.flagImageChanged();
     
     // get diff
-    absdiff(grayImage, previous, diff);
-    diff.update();
+//    absdiff(grayImage, previous, diff);
+//    diff.update();
     copy(grayImage, previous);
-    blur(diff,10);
+//    blur(diff,10);
 
+    
     
     grayImage.blur();
     
-    contourFinder.setMinAreaRadius(minAreaRadius);
-    contourFinder.setMaxAreaRadius(maxAreaRadius);
-    contourFinder.setThreshold(trackingThreshold);
+//    contourFinder.setMinAreaRadius(minAreaRadius);
+//    contourFinder.setMaxAreaRadius(maxAreaRadius);
+//    contourFinder.setThreshold(trackingThreshold);
 
-    contourFinder.findContours(grayImage);
+//    contourFinder.findContours(grayImage);
+
+    
+    for (int i = 0; i < previous.getWidth(); i++) {
+        for (int j = 0; j < previous.getHeight(); j++) {
+            ofColor c = previous.getColor(i, j);
+            
+            int x = i;
+            int y = j;
+            int strenchedX;
+            if(x > detectCircleCenterX && x + detectStrenchrX < 640){
+                strenchedX = x + detectStrenchrX;
+
+            }
+            
+            
+            if(x < detectCircleCenterX && x - detectStrenchrX > 0){
+                strenchedX = x - detectStrenchrX;
+            }
+            
+            
+            
+
+            strench.setColor(strenchedX, y, c);
+
+            
+        }
+    }
+    
+    
+    // remove out of detecting area
+    
+    for (int i = 0; i < strench.getWidth(); i++) {
+        for (int j = 0; j < strench.getHeight(); j++) {
+            //            // detect to remove other then circle base original coordination
+            float dist = sqrt((i - detectCircleCenterX)*(i - detectCircleCenterX) + (j-detectCircleCenterY)*(j-detectCircleCenterY));
+            
+            if(dist < inRadius || dist > outRadius){
+                strench.setColor(i,j,ofColor(0));
+            }
+        
+            
+            
+        }
+    }
+    
 
     
     
-
-    
-    for (int i = 0; i < diff.getWidth(); i++) {
-        for (int j = 0; j < diff.getHeight(); j++) {
-            ofColor c = diff.getColor(i, j);
+    for (int i = 0; i < strench.getWidth(); i++) {
+        for (int j = 0; j < strench.getHeight(); j++) {
+            ofColor c = strench.getColor(i, j);
             
             ofColor c1;
             c1.r = c.r;
             c1.g = 0;
             
             
+            
+            
+            // double size after
             c1.b = dataImg.getColor(i*2,j*2).b;
             dataImg.setColor(i*2, 2*j, c1);
             
@@ -178,10 +232,16 @@ void ofApp::update(){
             // 0 -> 0,1
             // 1 -> 2,3
             
+            
+
+            
         
         }
     }
     dataImg.update();
+    
+    grayImage.setFromPixels(strench);
+    grayImage.flagImageChanged();
     
     syphonFbo.begin();
     ofClear(0,0,0);
@@ -195,12 +255,21 @@ void ofApp::update(){
 void ofApp::draw(){
     
     
-    grayImage.draw(640,0,640,480);
-    diff.draw(640, 480);
+    grayImage.draw(0,0,640,480);
+//    diff.draw(640, 480);
     
 //    vidGrabber.getTexture().draw(0, 0);
-    contourFinder.draw();
+//    contourFinder.draw();
 //    colorImage.draw(0, 480);
+    
+    
+    ofSetColor(0, 0, 255,50);
+    ofDrawCircle(detectCircleCenterX, detectCircleCenterY, inRadius);
+    
+    ofSetColor(255, 0,0,50);
+    ofDrawCircle(detectCircleCenterX, detectCircleCenterY, outRadius);
+    
+    ofSetColor(255);
     gui.draw();
 
 }
