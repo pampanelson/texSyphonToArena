@@ -26,7 +26,8 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-		
+    float myPosToAngle(float x,float y,float cX,float cY);
+
     ofxSyphonServer     syphonServer;
     ofFbo               syphonFbo;
     

@@ -2,6 +2,32 @@
 using namespace ofxCv;
 using namespace cv;
 //--------------------------------------------------------------
+
+
+float ofApp::myPosToAngle(float x,float y,float centerX,float centerY){
+    float res;
+    // center on (320,480)
+    res = atan(
+               (centerY - y) // always > 0 for top lefter (0,0)
+               /
+               (centerX - x) // if > 0 means point on the left of center
+               // if < 0 point on the right of center
+               
+               )/PI;
+    
+    
+    // clock direction of angle from -x axis ///////////////  *********** IMPORTANT **********
+    // so , res should always < 1 aka. PI
+    if(res < 0){
+        res = 1. + res;
+    }
+    
+    return res;
+}
+
+
+
+
 void ofApp::setup(){
     ofSetFrameRate(30);
     ofSetVerticalSync(true);
