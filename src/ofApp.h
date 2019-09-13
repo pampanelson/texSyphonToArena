@@ -72,6 +72,6 @@ class ofApp : public ofBaseApp{
     ofParameter<int> detectStrenchrX;
     
 
-
-
+    int trackingDataSize = 64;
+    vector<float> trackingData;
 };

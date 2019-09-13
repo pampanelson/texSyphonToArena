@@ -98,6 +98,11 @@ void ofApp::setup(){
     }
     
     
+    for (int i = 0; i < trackingDataSize; i++) {
+        trackingData.push_back(-0.1);
+    }
+    
+    
     
     gui.setup();
 
@@ -130,6 +135,10 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    
+    for (int i = 0; i < trackingDataSize; i++) {
+        trackingData.push_back(-0.1);
+    }
     
     vidGrabber.update();
     
@@ -226,52 +235,60 @@ void ofApp::update(){
         for (int j = 0; j < strench.getHeight(); j++) {
             //            // detect to remove other then circle base original coordination
             float dist = sqrt((i - detectCircleCenterX)*(i - detectCircleCenterX) + (j-detectCircleCenterY)*(j-detectCircleCenterY));
-            
-            if(dist < inRadius || dist > outRadius){
-                strench.setColor(i,j,ofColor(0));
+
+            if(dist > inRadius && dist < outRadius){
+                ofColor c = strench.getColor(i, j);
+                
+//                cout << ofToString(c) << endl;
+                if(c.r < 100){
+                    float angle = myPosToAngle(i,j,detectCircleCenterY,detectCircleCenterY);
+                    
+                    int angleIndex = floor(64*angle);
+                    trackingData[i] = 1.0;
+                }
             }
-        
-            
-            
+
+
+
         }
     }
-    
 
+//
+//
     
-    
-    for (int i = 0; i < strench.getWidth(); i++) {
-        for (int j = 0; j < strench.getHeight(); j++) {
-            ofColor c = strench.getColor(i, j);
-            
-            ofColor c1;
-            c1.r = c.r;
-            c1.g = 0;
-            
-            
-            
-            int moveToCenterX = 1920 - detectCircleCenterX * 2;
-            // double size after
-            c1.b = dataImg.getColor(i*2 + moveToCenterX,j*2).b;
-            dataImg.setColor(i*2+ moveToCenterX, 2*j, c1);
-            
-            c1.b = dataImg.getColor(i*2+1+ moveToCenterX,j*2).b;
-            dataImg.setColor(i*2+1+ moveToCenterX, 2*j, c1);
-            
-            
-            c1.b = dataImg.getColor(i*2+ moveToCenterX,j*2+1).b;
-            dataImg.setColor(i*2+ moveToCenterX, 2*j+1, c1);
-            
-            c1.b = dataImg.getColor(i*2+1+ moveToCenterX,j*2+1).b;
-            dataImg.setColor(i*2+1+ moveToCenterX, 2*j+1, c1); // dataImg is 3840x960 , need double the diff with height and width
-            // 0 -> 0,1
-            // 1 -> 2,3
-            
-            
-
-            
-        
-        }
-    }
+//    for (int i = 0; i < strench.getWidth(); i++) {
+//        for (int j = 0; j < strench.getHeight(); j++) {
+//            ofColor c = strench.getColor(i, j);
+//
+//            ofColor c1;
+//            c1.r = c.r;
+//            c1.g = 0;
+//
+//
+//
+//            int moveToCenterX = 1920 - detectCircleCenterX * 2;
+//            // double size after
+//            c1.b = dataImg.getColor(i*2 + moveToCenterX,j*2).b;
+//            dataImg.setColor(i*2+ moveToCenterX, 2*j, c1);
+//
+//            c1.b = dataImg.getColor(i*2+1+ moveToCenterX,j*2).b;
+//            dataImg.setColor(i*2+1+ moveToCenterX, 2*j, c1);
+//
+//
+//            c1.b = dataImg.getColor(i*2+ moveToCenterX,j*2+1).b;
+//            dataImg.setColor(i*2+ moveToCenterX, 2*j+1, c1);
+//
+//            c1.b = dataImg.getColor(i*2+1+ moveToCenterX,j*2+1).b;
+//            dataImg.setColor(i*2+1+ moveToCenterX, 2*j+1, c1); // dataImg is 3840x960 , need double the diff with height and width
+//            // 0 -> 0,1
+//            // 1 -> 2,3
+//
+//
+//
+//
+//
+//        }
+//    }
     dataImg.update();
     
     grayImage.setFromPixels(strench);
@@ -280,9 +297,11 @@ void ofApp::update(){
     syphonFbo.begin();
     ofClear(0,0,0);
 
-    dataImg.draw(0, 0,3840,960);
+    //dataImg.draw(0, 0,3840,960);
     syphonFbo.end();
     syphonServer.publishTexture(&syphonFbo.getTexture());
+    
+    
 }
 
 //--------------------------------------------------------------
