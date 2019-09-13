@@ -223,20 +223,20 @@ void ofApp::update(){
             
             
             
-            
+            int moveToCenterX = 1920 - detectCircleCenterX * 2;
             // double size after
-            c1.b = dataImg.getColor(i*2,j*2).b;
-            dataImg.setColor(i*2, 2*j, c1);
+            c1.b = dataImg.getColor(i*2 + moveToCenterX,j*2).b;
+            dataImg.setColor(i*2+ moveToCenterX, 2*j, c1);
             
-            c1.b = dataImg.getColor(i*2+1,j*2).b;
-            dataImg.setColor(i*2+1, 2*j, c1);
+            c1.b = dataImg.getColor(i*2+1+ moveToCenterX,j*2).b;
+            dataImg.setColor(i*2+1+ moveToCenterX, 2*j, c1);
             
             
-            c1.b = dataImg.getColor(i*2,j*2+1).b;
-            dataImg.setColor(i*2, 2*j+1, c1);
+            c1.b = dataImg.getColor(i*2+ moveToCenterX,j*2+1).b;
+            dataImg.setColor(i*2+ moveToCenterX, 2*j+1, c1);
             
-            c1.b = dataImg.getColor(i*2+1,j*2+1).b;
-            dataImg.setColor(i*2+1, 2*j+1, c1); // dataImg is 3840x960 , need double the diff with height and width
+            c1.b = dataImg.getColor(i*2+1+ moveToCenterX,j*2+1).b;
+            dataImg.setColor(i*2+1+ moveToCenterX, 2*j+1, c1); // dataImg is 3840x960 , need double the diff with height and width
             // 0 -> 0,1
             // 1 -> 2,3
             
